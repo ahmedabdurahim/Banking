@@ -100,8 +100,8 @@ def CreateTransaction(bank_id, transaction_id, account_no, debitcredit, date, st
     # Create the transactions table if it doesn't exist
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS transactions (
-            bank_id INTEGER,
-            transaction_id INTEGER PRIMARY KEY,
+            bank_id TEXT,
+            transaction_id TEXT PRIMARY KEY,
             account_no TEXT,
             debitcredit REAL,
             date TEXT,
@@ -111,34 +111,39 @@ def CreateTransaction(bank_id, transaction_id, account_no, debitcredit, date, st
 
     # Check if the account exists in the users table
     cursor.execute('''
-        SELECT * FROM users WHERE account_no = :account_no AND bank_id = :bank_id
-    ''', {'account_no': account_no, 'bank_id': bank_id})
+        SELECT * FROM users WHERE bankacc = :bankacc AND bankid = :bank_id
+    ''', {'bankacc': account_no, 'bank_id': bank_id})
 
     user = cursor.fetchone()
 
     if user:
         # Retrieve the existing balance
-        current_balance = user[3]  # Assuming the balance column is at index 3
+        current_balance = float(user[7])  # Assuming the balance column is at index 6
+        if (debitcredit + current_balance < 0):
+            return False
+        else:
+            # Calculate the updated balance
+            updated_balance = current_balance + debitcredit
 
-        # Calculate the updated balance
-        updated_balance = current_balance + debitcredit
+            # Update the balance in the users table
+            cursor.execute('''
+                UPDATE users SET balance = :updated_balance WHERE bankacc = :account_no AND bankid = :bank_id
+            ''', {'updated_balance': updated_balance, 'account_no': account_no, 'bank_id': bank_id})
 
-        # Update the balance in the users table
-        cursor.execute('''
-            UPDATE users SET balance = :updated_balance WHERE account_no = :account_no AND bank_id = :bank_id
-        ''', {'updated_balance': updated_balance, 'account_no': account_no, 'bank_id': bank_id})
+            # Insert data into the transactions table
+            cursor.execute('''
+                INSERT INTO transactions (bank_id, transaction_id, account_no, debitcredit, date, status)
+                VALUES (:bank_id, :transaction_id, :account_no, :debitcredit, :date, :status)
+            ''', {'bank_id': bank_id, 'transaction_id': transaction_id, 'account_no': account_no, 'debitcredit': float(debitcredit), 'date': date, 'status': status})
 
-    # Insert data into the transactions table
-    cursor.execute('''
-        INSERT INTO transactions (bank_id, transaction_id, account_no, debitcredit, date, status)
-        VALUES (:bank_id, :transaction_id, :account_no, :debitcredit, :date, :status)
-    ''', {'bank_id': bank_id, 'transaction_id': transaction_id, 'account_no': account_no, 'debitcredit': debitcredit, 'date': date, 'status': status})
+            # Commit the changes to the database
+            conn.commit()
 
-    # Commit the changes to the database
-    conn.commit()
-
+            return True
+    else:
+        return False
 
 
-print(CreateBankEntity(1, 'email@email.com','12345678','Fname','Lname', 'READWRITE', 'READWRITE', 'READWRITE'))
+print(CreateTransaction('1', 'wyyggdh', '100000', -1500, '23-01-24', 'complete'))
 
 
