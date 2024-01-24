@@ -1,4 +1,6 @@
 import sqlite3
+import uuid
+import secrets
 
 # Connect to the database (or create it if it doesn't exist)
 conn = sqlite3.connect('database.db')
@@ -19,7 +21,7 @@ def CreateUser(email, password, first_name, last_name, bankid, bankacc, balance)
             last_name TEXT,
             bankid TEXT,
             bankacc TEXT,
-            balance TEXT
+            balance REAL
         )
     ''')
 
@@ -96,7 +98,7 @@ def CreateBankEntity(bank_id, email, password, first_name, last_name, transactio
     return True
 
 
-def CreateTransaction(bank_id, transaction_id, account_no, debitcredit, date, status):
+def CreateTransaction(bank_id, account_no, debitcredit, date, status):
     # Create the transactions table if it doesn't exist
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS transactions (
@@ -134,7 +136,7 @@ def CreateTransaction(bank_id, transaction_id, account_no, debitcredit, date, st
             cursor.execute('''
                 INSERT INTO transactions (bank_id, transaction_id, account_no, debitcredit, date, status)
                 VALUES (:bank_id, :transaction_id, :account_no, :debitcredit, :date, :status)
-            ''', {'bank_id': bank_id, 'transaction_id': transaction_id, 'account_no': account_no, 'debitcredit': float(debitcredit), 'date': date, 'status': status})
+            ''', {'bank_id': bank_id, 'transaction_id': str(uuid.uuid4()), 'account_no': account_no, 'debitcredit': float(debitcredit), 'date': date, 'status': status})
 
             # Commit the changes to the database
             conn.commit()
@@ -144,6 +146,139 @@ def CreateTransaction(bank_id, transaction_id, account_no, debitcredit, date, st
         return False
 
 
-print(CreateTransaction('1', 'wyyggdh', '100000', -1500, '23-01-24', 'complete'))
+def CreateAPIKEY(bank_id, read_access, write_access):
+    api_key = secrets.token_hex(4)
+     # Create the api_key table if it doesn't exist
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS api_key (
+            bank_id INTEGER,
+            read_access INTEGER,
+            write_access INTEGER,
+            api_key TEXT,
+            PRIMARY KEY (api_key)
+        )
+    ''')
+
+    # Insert the data into the api_key table
+    cursor.execute('''
+        INSERT INTO api_key (bank_id, read_access, write_access, api_key)
+        VALUES (:bank_id, :read_access, :write_access, :api_key)
+    ''', {'bank_id': bank_id, 'read_access': read_access, 'write_access': write_access, 'api_key': api_key})
+
+    # Commit the changes and close the connection
+    conn.commit()
+    return api_key
+
+
+def CreditScore(bank_id, account_no, credit_score, interest_rate):
+    # Create the credit_score table if it doesn't exist
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS credit_score (
+            bank_id INTEGER,
+            account_no TEXT,
+            credit_score INTEGER,
+            interest_rate REAL,
+            PRIMARY KEY (bank_id, account_no)
+        )
+    ''')
+
+    # Insert the data into the credit_score table
+    cursor.execute('''
+        INSERT INTO credit_score (bank_id, account_no, credit_score, interest_rate)
+        VALUES (:bank_id, :account_no, :credit_score, :interest_rate)
+    ''', {'bank_id': bank_id, 'account_no': account_no, 'credit_score': credit_score, 'interest_rate': interest_rate})
+
+    # Commit the changes and close the connection
+    conn.commit()
+    return True
+
+
+def ModifyCreditScore(bank_id, account_no, credit_score, interest_rate):
+    # Check if the bank_id and account_no exist in the credit_score table
+    cursor.execute('''
+        SELECT COUNT(*) FROM credit_score
+        WHERE bank_id = ? AND account_no = ?
+    ''', (bank_id, account_no))
+
+    # Fetch the result
+    result = cursor.fetchone()
+    exists = result[0] > 0
+
+    if exists:
+        # Run the update query to modify the credit score and interest rate
+        cursor.execute('''
+            UPDATE credit_score
+            SET credit_score = ?, interest_rate = ?
+            WHERE bank_id = ? AND account_no = ?
+        ''', (credit_score, interest_rate, bank_id, account_no))
+
+        # Commit the changes to the database
+        conn.commit()
+
+    # Return True if the update was performed, otherwise return False
+    return exists
+
+
+def Login(bank_id, email, password):
+    # Execute the query to check if the user exists
+    cursor.execute('''
+        SELECT COUNT(*) FROM users
+        WHERE bankid = ? AND email = ? AND password = ?
+    ''', (bank_id, email, password))
+
+    # Fetch the result
+    result = cursor.fetchone()[0]
+
+    # Return True if the user exists, False otherwise
+    if result > 0:
+        return True
+    else:
+        return False
+
+
+def StaffLogin(bank_id, email, password):
+    # Execute the query to check if the user exists
+    cursor.execute('''
+        SELECT COUNT(*) FROM bank_entities
+        WHERE bank_id = ? AND email = ? AND password = ?
+    ''', (bank_id, email, password))
+
+    # Fetch the result
+    result = cursor.fetchone()[0]
+
+    # Return True if the user exists, False otherwise
+    if result > 0:
+        return True
+    else:
+        return False
+
+
+def GetTransactions(bank_id, account_no):
+     # Execute the query to fetch transactions
+    cursor.execute('''
+        SELECT * FROM transactions
+        WHERE bank_id = ? AND account_no = ?
+    ''', (bank_id, account_no))
+
+    # Fetch all rows
+    rows = cursor.fetchall()
+
+    # Create a list to store the transactions
+    transactions = []
+
+    # Convert each row into a dictionary and append to the transactions list
+    for row in rows:
+        transaction = {
+            'bank_id': row[0],
+            'transaction_id': row[1],
+            'account_no': row[2],
+            'debitcredit': row[3],
+            'date': row[4],
+            'status': row[5]
+        }
+        transactions.append(transaction)
+
+    # Return the transactions list
+    return transactions
 
 
