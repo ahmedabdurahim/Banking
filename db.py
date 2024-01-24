@@ -44,7 +44,7 @@ def CreateUser(email, password, first_name, last_name, bankid, bankacc, balance)
         return True
 
 
-def CreateBank(name, address, date):
+def CreateBank(name, address):
     # Create the banks table if it doesn't exist
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS banks (
@@ -59,7 +59,7 @@ def CreateBank(name, address, date):
     cursor.execute('''
         INSERT INTO banks (name, address, date)
         VALUES (:name, :address, :date)
-    ''', {'name': name, 'address': address, 'date': date})
+    ''', {'name': name, 'address': address, 'date': date.today()})
 
     # Commit the changes to the database
     conn.commit()
@@ -99,7 +99,7 @@ def CreateBankEntity(bank_id, email, password, first_name, last_name, transactio
     return True
 
 
-def CreateTransaction(bank_id, account_no, debitcredit, date, status):
+def CreateTransaction(bank_id, account_no, debitcredit):
     # Create the transactions table if it doesn't exist
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS transactions (
@@ -125,6 +125,10 @@ def CreateTransaction(bank_id, account_no, debitcredit, date, status):
         if (debitcredit + current_balance < 0):
             return False
         else:
+            credit_score = FetchCreditScore(bank_id, account_no)
+            calculated_score = CalculateCreditScore(bank_id, account_no, credit_score)
+            ModifyCreditScore(bank_id, account_no, calculated_score,8.0)
+
             # Calculate the updated balance
             updated_balance = current_balance + debitcredit
 
@@ -137,7 +141,7 @@ def CreateTransaction(bank_id, account_no, debitcredit, date, status):
             cursor.execute('''
                 INSERT INTO transactions (bank_id, transaction_id, account_no, debitcredit, date, status)
                 VALUES (:bank_id, :transaction_id, :account_no, :debitcredit, :date, :status)
-            ''', {'bank_id': bank_id, 'transaction_id': str(uuid.uuid4()), 'account_no': account_no, 'debitcredit': float(debitcredit), 'date': date, 'status': status})
+            ''', {'bank_id': bank_id, 'transaction_id': str(uuid.uuid4()), 'account_no': account_no, 'debitcredit': float(debitcredit), 'date': date.today(), 'status': "COMPLETE"})
 
             # Commit the changes to the database
             conn.commit()
@@ -225,6 +229,22 @@ def FetchLoan(bank_id, account_no):
     return balance
 
 
+def FetchCreditScore(bank_id, account_no):
+    # Execute the query to fetch the balance
+    cursor.execute('''
+        SELECT credit_score FROM credit_score
+        WHERE account_no = ? AND bank_id = ?
+    ''', (account_no, bank_id))
+
+    # Fetch the result
+    result = cursor.fetchone()
+
+    # Return the balance if it exists, otherwise return None
+    credit_score = result[0] if result else None
+
+    return credit_score
+
+
 def CreditReport(bank_id, account_no, loan_amount):
     # Create the credit_score table if it doesn't exist
     cursor.execute('''
@@ -244,13 +264,17 @@ def CreditReport(bank_id, account_no, loan_amount):
     loan_outstanding = FetchLoan(bank_id, account_no)
 
     if(loan_outstanding is None):
+        credit_score = FetchCreditScore(bank_id, account_no)
+        calculated_score = CalculateCreditScore(bank_id, account_no, credit_score)
+        ModifyCreditScore(bank_id, account_no, calculated_score, 8.0)
+
         # Insert the data into the credit_score table
         cursor.execute('''
             INSERT INTO credit_report (bank_id, account_no, loan_id, loan_amount, remaining, status, interest_rate, date_due)
             VALUES (:bank_id, :account_no, :loan_id, :loan_amount, :remaining, :status, :interest_rate, :date_due)
         ''', {'bank_id': bank_id, 'account_no': account_no, 'loan_id': str(uuid.uuid4()), 'loan_amount': loan_amount, 'remaining': loan_amount, 'status': 'OPEN', 'interest_rate': 8.0 ,'date_due' : str(date.today())})
 
-        CreateTransaction(bank_id, account_no, loan_amount, str(date.today()), 'COMPLETE')
+        CreateTransaction(bank_id, account_no, loan_amount)
 
         # Commit the changes and close the connection
         conn.commit()
@@ -262,10 +286,10 @@ def CreditReport(bank_id, account_no, loan_amount):
 
 def CalculateCreditScore(bank_id, account_no, current_score):
     balance = FetchBalance(bank_id, account_no)
-    loan = FetchLoan(bank_id, account_no)
+    loan = FetchLoan(bank_id, account_no) if FetchLoan(bank_id, account_no) is not None else 0
 
-    franction = (balance - loan)/850
-    credit_score = franction + current_score
+    fraction = (balance - loan)/850
+    credit_score = max(min(fraction + current_score, 850), 300)
     
 
     return credit_score
@@ -360,7 +384,7 @@ def GetTransactions(bank_id, account_no):
     return transactions
 
 
-print(CalculateCreditScore('1', '100000'))
-# print(FetchLoan('1','100000'))
+# print(CreateTransaction('1','100000',-6400))
+print(CreditReport('1','100000',200000))
 
 conn.close()
