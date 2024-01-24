@@ -1,6 +1,7 @@
 import sqlite3
 import uuid
 import secrets
+from datetime import date
 
 # Connect to the database (or create it if it doesn't exist)
 conn = sqlite3.connect('database.db')
@@ -193,6 +194,83 @@ def CreditScore(bank_id, account_no, credit_score, interest_rate):
     return True
 
 
+def FetchBalance(bank_id, account_no):
+    # Execute the query to fetch the balance
+    cursor.execute('''
+        SELECT balance FROM users
+        WHERE bankacc = ? AND bankid = ?
+    ''', (account_no, bank_id))
+
+    # Fetch the result
+    result = cursor.fetchone()
+
+    # Return the balance if it exists, otherwise return None
+    balance = result[0] if result else None
+    return balance
+
+
+def FetchLoan(bank_id, account_no):
+    # Execute the query to fetch the balance
+    cursor.execute('''
+        SELECT loan_amount FROM credit_report
+        WHERE account_no = ? AND bank_id = ?
+    ''', (account_no, bank_id))
+
+    # Fetch the result
+    result = cursor.fetchone()
+
+    # Return the balance if it exists, otherwise return None
+    balance = result[0] if result else None
+
+    return balance
+
+
+def CreditReport(bank_id, account_no, loan_amount):
+    # Create the credit_score table if it doesn't exist
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS credit_report (
+            bank_id INTEGER,
+            account_no TEXT,
+            loan_id TEXT,
+            loan_amount REAL,
+            remaining REAL,
+            status TEXT,
+            interest_rate REAL,
+            date_due TEXT,
+            PRIMARY KEY (loan_id)
+        )
+    ''')
+
+    loan_outstanding = FetchLoan(bank_id, account_no)
+
+    if(loan_outstanding is None):
+        # Insert the data into the credit_score table
+        cursor.execute('''
+            INSERT INTO credit_report (bank_id, account_no, loan_id, loan_amount, remaining, status, interest_rate, date_due)
+            VALUES (:bank_id, :account_no, :loan_id, :loan_amount, :remaining, :status, :interest_rate, :date_due)
+        ''', {'bank_id': bank_id, 'account_no': account_no, 'loan_id': str(uuid.uuid4()), 'loan_amount': loan_amount, 'remaining': loan_amount, 'status': 'OPEN', 'interest_rate': 8.0 ,'date_due' : str(date.today())})
+
+        CreateTransaction(bank_id, account_no, loan_amount, str(date.today()), 'COMPLETE')
+
+        # Commit the changes and close the connection
+        conn.commit()
+
+        return True 
+    else:
+        return False
+
+
+def CalculateCreditScore(bank_id, account_no, current_score):
+    balance = FetchBalance(bank_id, account_no)
+    loan = FetchLoan(bank_id, account_no)
+
+    franction = (balance - loan)/850
+    credit_score = franction + current_score
+    
+
+    return credit_score
+
+
 def ModifyCreditScore(bank_id, account_no, credit_score, interest_rate):
     # Check if the bank_id and account_no exist in the credit_score table
     cursor.execute('''
@@ -282,3 +360,7 @@ def GetTransactions(bank_id, account_no):
     return transactions
 
 
+print(CalculateCreditScore('1', '100000'))
+# print(FetchLoan('1','100000'))
+
+conn.close()
