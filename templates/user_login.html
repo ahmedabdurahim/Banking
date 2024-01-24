@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internet Banking | Login</title>
+    <!-- <link rel="icon" type="image/x-icon" href="{{ url_for ('static', filename = 'images/favicon.ico')}}"> -->
+    <link rel="stylesheet" href="{{ url_for ('static', filename = 'css/user_login.css')}}">
+</head>
+<body>
+    <div class="container">
+        <div class="left-section">
+          <h1>Benefits of Using Banks</h1>
+          <div class="benefits">
+            <p>1. Secure your money: Banks provide a safe place to store your money, protecting it from theft and loss.</p>
+            <p>2. Easy access to funds: With banks, you can access your money through ATM withdrawals, online transfers, and more.</p>
+            <p>3. Building credit: Banks offer credit products like loans and credit cards, helping you establish and improve your credit history.</p>
+            <p>4. Financial advice: Many banks provide financial planning services, helping you make informed decisions about your money.</p>
+            <p>5. Convenience: Banks offer a range of services, such as bill payments and mobile banking, making managing your finances easier.</p>
+          </div>
+        </div>
+        <div class="right-section">
+          <h1>User Login</h1>
+          <form action="/login" method="POST">
+            <div class="form-group">
+              <label for="bank_id">Bank ID</label>
+              <input type="text" id="bank_id" name="bank_id" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="button">Login</button>
+          </form>
+          <button class="button signup-button">Sign Up</button>
+        </div>
+      </div>
+</body>
+</html>

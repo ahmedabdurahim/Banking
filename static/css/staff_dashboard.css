@@ -1,0 +1,127 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 95vw;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+  .balance-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .balance-score h1 {
+    font-size: 48px;
+    margin: 0;
+    color: #2e3d48;
+  }
+
+  .balance-score p {
+    font-size: 24px;
+    margin: 0;
+    color: #888;
+  }
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+    margin-left: 20px;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    min-width: 200px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    z-index: 1;
+    padding: 10px;
+    border-radius: 4px;
+  }
+
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+
+  .dropdown-item {
+    padding: 8px 0;
+    cursor: pointer;
+    color: #555;
+  }
+
+  .dropdown-item:hover {
+    color: #ff4d4d;
+  }
+
+  .finance-themed {
+    background-color: #2e3d48;
+    color: #fff;
+  }
+
+  .bulky {
+    padding: 30px;
+  }
+
+  .dashboard-text {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .dashboard-text span {
+    font-weight: bold;
+  }
+
+  .dashboard-text-title {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  .news-section {
+    margin-top: 50px;
+    font-size: 18px;
+    line-height: 1.5;
+  }
+
+  .news-section p {
+    margin-bottom: 20px;
+  }
+
+  .text-field {
+    margin-bottom: 10px;
+  }
+
+  .send-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .send-button:hover {
+    background-color: #45a049;
+  }

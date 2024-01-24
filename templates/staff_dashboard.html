@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internet Banking | Login</title>
+    <!-- <link rel="icon" type="image/x-icon" href="{{ url_for ('static', filename = 'images/favicon.ico')}}"> -->
+    <link rel="stylesheet" href="{{ url_for ('static', filename = 'css/staff_dashboard.css')}}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+        <div class="action">
+          <div class="dropdown">
+            <span class="dropdown-item">Make a deposit</span>
+              <div class="dropdown-content">
+              <div class="dropdown-item">
+              <input type="text" class="text-field" placeholder="Account Number">
+              <input type="text" class="text-field" placeholder="Amount">
+              <button class="send-button">Send</button>
+             </div>
+            </div>
+           </div>
+          <div class="dropdown">
+            <span class="dropdown-item">Transfer</span>
+            <div class="dropdown-content">
+              <div class="dropdown-item">
+                <input type="text" class="text-field" placeholder="Account Number From">
+                <input type="text" class="text-field" placeholder="Account Number To">
+                <input type="text" class="text-field" placeholder="Amount">
+                <button class="send-button">Send</button>
+              </div>
+            </div>
+          </div>
+          <div class="dropdown">
+            <span class="dropdown-item">Grant Loan</span>
+            <div class="dropdown-content">
+              <div class="dropdown-item">
+                <input type="text" class="text-field" placeholder="Account">
+                <input type="text" class="text-field" placeholder="Reason">
+                <input type="text" class="text-field" placeholder="Amount">
+                <button class="send-button">Submit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+          <div class="balance-score">
+            <p>Todays Date: 25-01-24</p>
+          </div>
+        </div>
+        <div class="finance-themed bulky">
+          <div class="dashboard-text-title">Welcome to your bank back office!</div>
+          <!-- <div class="dashboard-text">Your account balance is <span>$10,000</span>.</div>
+          <div class="dashboard-text">Your credit score is <span>800</span>.</div> -->
+          <div class="dashboard-text">What would you like to do today?</div>
+        </div>
+        <div class="news-section">
+          <h2>Recent News</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque rhoncus lectus nonlorem dignissim et. Ut in consectetur nibh. Integer eu ligula in enim malesuada aliquam. Suspendisse potenti. Fusce non magna quis felis efficitur vestibulum eu ac mi. Vivamus in lacinia ante, vitae pharetra enim. Sed ut leo id risus rutrum fermentum. Phasellus nec est vitae mauris tristique ullamcorper non vitae ex. Sed posuere, dui non gravida tincidunt, eros est eleifend ligula, sit amet eleifend est urna non dolor. Nam sed augue id ipsum euismod pellentesque ac at lorem. Sed sit amet enim molestie, viverra nunc at, tincidunt tortor.</p>
+          <p>Proin ultricies, lacus eget interdum luctus, nisi nisl eleifend mi, sit amet convallis enim sem at nibh. Etiam efficitur porttitor justo, et auctor metus tincidunt sed. Vivamus et sollicitudin nunc. Duis in lacinia purus. Sed vitae turpis varius, molestie tortor quis, sollicitudin neque. Mauris lacinia tellus eget enim imperdiet, eget blandit lorem mollis. Cras eu ex vel justo lacinia ultricies. Praesent vel nisl nunc. Nullam id facilisis nunc, nec malesuada orci. Integer non fringilla risus. Integer convallis, ipsum ut hendrerit lobortis, turpis sapien commodo orci, vel facilisis enim erat sit amet quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
+        </div>
+      </div>
+</body>
+</html>
