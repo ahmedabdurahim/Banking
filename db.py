@@ -63,7 +63,11 @@ def CreateBank(name, address):
 
     # Commit the changes to the database
     conn.commit()
-    return True
+
+    bank_id = cursor.lastrowid
+
+    return bank_id
+
 
 
 def CreateBankEntity(bank_id, email, password, first_name, last_name, transactions_access, executive_access, users_access):

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Internet Banking | Login</title>
+    <title>Internet Banking | Back Office</title>
     <!-- <link rel="icon" type="image/x-icon" href="{{ url_for ('static', filename = 'images/favicon.ico')}}"> -->
     <link rel="stylesheet" href="{{ url_for ('static', filename = 'css/staff_dashboard.css')}}">
 </head>
@@ -15,9 +15,11 @@
             <span class="dropdown-item">Make a deposit</span>
               <div class="dropdown-content">
               <div class="dropdown-item">
-              <input type="text" class="text-field" placeholder="Account Number">
-              <input type="text" class="text-field" placeholder="Amount">
-              <button class="send-button">Send</button>
+              <form action="#" method="post">
+                <input type="number" class="text-field" placeholder="Account Number" name="deposit-acc" required>
+                <input type="number" class="text-field" placeholder="Amount" name="deposit-amount" required>
+                <button class="send-button" name="deposit-button">Send</button>
+              </form>
              </div>
             </div>
            </div>
@@ -25,10 +27,12 @@
             <span class="dropdown-item">Transfer</span>
             <div class="dropdown-content">
               <div class="dropdown-item">
-                <input type="text" class="text-field" placeholder="Account Number From">
-                <input type="text" class="text-field" placeholder="Account Number To">
-                <input type="text" class="text-field" placeholder="Amount">
-                <button class="send-button">Send</button>
+                <form action="#" method="post">
+                  <input type="number" class="text-field" placeholder="Account Number From" name="acc-from" required>
+                  <input type="number" class="text-field" placeholder="Account Number To" name="acc-to" required>
+                  <input type="number" class="text-field" placeholder="Amount" name="transfer-amount" required>
+                  <button class="send-button" name="transfer-button">Send</button>
+                </form>
               </div>
             </div>
           </div>
@@ -36,10 +40,12 @@
             <span class="dropdown-item">Grant Loan</span>
             <div class="dropdown-content">
               <div class="dropdown-item">
-                <input type="text" class="text-field" placeholder="Account">
-                <input type="text" class="text-field" placeholder="Reason">
-                <input type="text" class="text-field" placeholder="Amount">
-                <button class="send-button">Submit</button>
+                <form action="#" method="post">
+                  <input type="number" class="text-field" placeholder="Account" name="ben-account" required>
+                  <input type="text" class="text-field" placeholder="Reason" name="reason" required>
+                  <input type="number" class="text-field" placeholder="Amount" name="ben-amount" required>
+                  <button class="send-button" name="grant-button">Submit</button>
+                </form>
               </div>
             </div>
           </div>

@@ -15,9 +15,11 @@
             <span class="dropdown-item">Transfer</span>
             <div class="dropdown-content">
               <div class="dropdown-item">
-                <input type="text" class="text-field" placeholder="Account Number">
-                <input type="text" class="text-field" placeholder="Amount">
-                <button class="send-button">Send</button>
+                <form action="" method="post">
+                  <input type="text" class="text-field" placeholder="Account Number" name="account" required>
+                  <input type="number" class="text-field" placeholder="Amount" name="amount" required>
+                  <button class="send-button" name="send">Send</button>
+                </form>
               </div>
             </div>
           </div>
@@ -41,7 +43,7 @@
           <div class="dashboard-text-title">Welcome to your bank!</div>
           <div class="dashboard-text">Your account balance is <span>{{balance}}</span>.</div>
           <div class="dashboard-text">Your credit score is <span>{{credit_score | round(0) }}</span>.</div>
-          <div class="dashboard-text">What would you like to do today?</div>
+          <div class="dashboard-text">Bank Account: {{account_no}}</div>
         </div>
         <div class="news-section">
           <h2>Recent News</h2>
