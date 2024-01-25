@@ -4,7 +4,7 @@ import secrets
 from datetime import date
 
 # Connect to the database (or create it if it doesn't exist)
-conn = sqlite3.connect('database.db')
+conn = sqlite3.connect('database.db', check_same_thread=False)
 
 # Create a cursor object to execute SQL statements
 cursor = conn.cursor()
@@ -244,6 +244,21 @@ def FetchCreditScore(bank_id, account_no):
 
     return credit_score
 
+def FetchAccountNumber(bank_id, email):
+    # Execute the query to fetch the balance
+    cursor.execute('''
+        SELECT bankacc FROM users
+        WHERE bankid = ? AND email = ?
+    ''', (bank_id, email))
+
+    # Fetch the result
+    result = cursor.fetchone()
+
+    # Return the balance if it exists, otherwise return None
+    account_no = result[0] if result else None
+
+    return account_no
+
 
 def CreditReport(bank_id, account_no, loan_amount):
     # Create the credit_score table if it doesn't exist
@@ -384,7 +399,39 @@ def GetTransactions(bank_id, account_no):
     return transactions
 
 
-# print(CreateTransaction('1','100000',-6400))
-print(CreditReport('1','100000',200000))
 
-conn.close()
+
+def GetLoans(bank_id, account_no):
+     # Execute the query to fetch transactions
+    cursor.execute('''
+        SELECT * FROM credit_report
+        WHERE bank_id = ? AND account_no = ?
+    ''', (bank_id, account_no))
+
+    # Fetch all rows
+    rows = cursor.fetchall()
+
+    # Create a list to store the transactions
+    loans = []
+
+    # Convert each row into a dictionary and append to the transactions list
+    for row in rows:
+        loan = {
+            'bank_id': row[0],
+            'account_no': row[1],
+            'loan_id': row[2],
+            'loan_amount': row[3],
+            'remaining': row[4],
+            'status': row[5],
+            'interest_rate': row[6],
+            'date_due': row[7]
+
+        }
+        loans.append(loan)
+
+    # Return the transactions list
+    return loans
+
+
+# print(GetLoans('1','100000'))
+

@@ -34,9 +34,9 @@
               <label for="password">Password</label>
               <input type="password" id="password" name="password" required>
             </div>
-            <button type="submit" class="button">Sign Up</button>
+            <button type="submit" class="button" neme="'signup">Sign Up</button>
           </form>
-          <button class="button signup-button">Login</button>
+          <a href="{{ url_for('login') }}" class="button signup-button">Login</a>
         </div>
       </div>
 </body>

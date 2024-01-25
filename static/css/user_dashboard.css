@@ -3,7 +3,7 @@ body {
     margin: 0;
     padding: 0;
     background: #f9f9f9;
-    display: flex;
+    /* display: flex; */
     justify-content: center;
     align-items: center;
     min-height: 100vh;
@@ -125,3 +125,38 @@ body {
   .send-button:hover {
     background-color: #45a049;
   }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+    color: #333;
+}
+
+tr:hover {
+    background-color: #cac9c9;
+}
+
+.table-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+
+.heading {
+  background-color: #f2f2f2;
+  color: #333;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 12px;
+  margin-bottom: 16px;
+}

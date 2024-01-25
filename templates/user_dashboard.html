@@ -33,14 +33,14 @@
           </div>
         </div>
           <div class="balance-score">
-            <h1>$10,000</h1>
-            <p>Credit Score: 800</p>
+            <!-- <h1>Balance: {{ balance }}</h1> -->
+            <p>Credit Score: {{ credit_score | round(0) }}</p>
           </div>
         </div>
         <div class="finance-themed bulky">
           <div class="dashboard-text-title">Welcome to your bank!</div>
-          <div class="dashboard-text">Your account balance is <span>$10,000</span>.</div>
-          <div class="dashboard-text">Your credit score is <span>800</span>.</div>
+          <div class="dashboard-text">Your account balance is <span>{{balance}}</span>.</div>
+          <div class="dashboard-text">Your credit score is <span>{{credit_score | round(0) }}</span>.</div>
           <div class="dashboard-text">What would you like to do today?</div>
         </div>
         <div class="news-section">
@@ -49,5 +49,61 @@
           <p>Proin ultricies, lacus eget interdum luctus, nisi nisl eleifend mi, sit amet convallis enim sem at nibh. Etiam efficitur porttitor justo, et auctor metus tincidunt sed. Vivamus et sollicitudin nunc. Duis in lacinia purus. Sed vitae turpis varius, molestie tortor quis, sollicitudin neque. Mauris lacinia tellus eget enim imperdiet, eget blandit lorem mollis. Cras eu ex vel justo lacinia ultricies. Praesent vel nisl nunc. Nullam id facilisis nunc, nec malesuada orci. Integer non fringilla risus. Integer convallis, ipsum ut hendrerit lobortis, turpis sapien commodo orci, vel facilisis enim erat sit amet quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
         </div>
       </div>
+      <div class="heading">Transactions</div>
+      <div class="table-container">
+        <table>
+          <thead>
+              <tr>
+                  <th>Bank ID</th>
+                  <th>Transaction ID</th>
+                  <th>Account No</th>
+                  <th>Debit/Credit</th>
+                  <th>Date</th>
+                  <th>Status</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for transaction in transactions %}
+              <tr>
+                  <td>{{ transaction.bank_id }}</td>
+                  <td>{{ transaction.transaction_id }}</td>
+                  <td>{{ transaction.account_no }}</td>
+                  <td>{{ transaction.debitcredit }}</td>
+                  <td>{{ transaction.date }}</td>
+                  <td>{{ transaction.status }}</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+    </div>
+    <div class="heading">Loans</div>
+      <div class="table-container">
+        <table>
+          <thead>
+              <tr>
+                  <th>Bank ID</th>
+                  <th>Loan ID</th>
+                  <th>Account No</th>
+                  <th>Loan Amount</th>
+                  <th>Remaining</th>
+                  <th>Interest Rate %</th>
+                  <th>Default Due</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for loan in loans %}
+              <tr>
+                  <td>{{ loan.bank_id }}</td>
+                  <td>{{ loan.loan_id }}</td>
+                  <td>{{ loan.account_no }}</td>
+                  <td>{{ loan.loan_amount }}</td>
+                  <td>{{ loan.remaining }}</td>
+                  <td>{{ loan.interest_rate }}</td>
+                  <td>{{ loan.date_due }}</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+    </div>
 </body>
 </html>

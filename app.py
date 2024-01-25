@@ -14,8 +14,22 @@ def home():
     return render_template("home.html")
 
 
-@app.route('/user/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    bank_id = request.form.get('bank_id')
+    email = request.form.get('email')
+    password = request.form.get('password')
+
+    if request.method == 'POST':
+        if(db.Login(bank_id, email, password)):
+            session['bank_id'] = bank_id
+            session['email'] = email
+            session['account_no'] = db.FetchAccountNumber(bank_id, email)
+
+            return redirect(url_for('dashboard_user'))
+        else:
+            pass
+        
     return render_template("user_login.html")
 
 
@@ -24,14 +38,23 @@ def staff():
     return render_template("staff_login.html")
 
 
-@app.route('/user/signup', methods=['GET', 'POST'])
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
     return render_template("signup.html")
 
 
-@app.route('/user/dashboard', methods=['GET', 'POST'])
+@app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard_user():
-    return render_template("user_dashboard.html")
+    bank_id = session['bank_id']
+    account_no = session['account_no']
+    email = session['email']
+
+    balance = db.FetchBalance(bank_id, account_no)
+    credit_score = db.FetchCreditScore(bank_id, account_no)
+    transactions = db.GetTransactions(bank_id, account_no)
+    loans = db.GetLoans(bank_id, account_no)
+
+    return render_template("user_dashboard.html", balance=balance, credit_score=credit_score, transactions=transactions, loans=loans)
 
 @app.route('/staff/dashboard', methods=['GET', 'POST'])
 def dashboard_staff():
